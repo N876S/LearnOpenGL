@@ -1,6 +1,7 @@
 #include <glad/glad.h>  //must be before glfw
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "shader.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
@@ -41,6 +42,33 @@ int main() {
   glViewport(0, 0, width, height);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+  float data[] = {
+    -0.5f, -0.5f, 0.0f,
+    0.0f, 0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f
+  };
+
+  //VAO
+  unsigned int VAO;
+  glGenVertexArrays(1, &VAO);
+  glBindVertexArray(VAO);
+
+  //VBO
+  unsigned int VBO;
+  glGenBuffers(1, &VBO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+
+  //attributes
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  //unbind for later use
+  glBindVertexArray(0);
+
+  //create shader
+  Shader shader("shaders/shader.vs", "shaders/shader.fs");
+
   // render loop
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -49,6 +77,11 @@ int main() {
     // render/draw
     glClearColor(0.1f, 0.5f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    //draw triangles
+    shader.use();
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     // poll events and swap buffers
     glfwPollEvents();
