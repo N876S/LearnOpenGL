@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "shader.h"
+#include <cmath>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
@@ -42,10 +43,11 @@ int main() {
   glViewport(0, 0, width, height);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  float data[] = {
-    -0.5f, -0.5f, 0.0f,
-    0.0f, 0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f
+  float data[] = { 
+    //POSITION            COLOR
+    -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
+    0.0f, 0.5f, 0.0f,     0.0f, 1.0f, 0.0f,
+    0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f
   };
 
   //VAO
@@ -60,23 +62,34 @@ int main() {
   glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
 
   //attributes
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+  glEnableVertexAttribArray(1);
 
   //unbind for later use
   glBindVertexArray(0);
 
   //create shader
-  Shader shader("shaders/shader.vs", "shaders/shader.fs");
+  Shader shader("../shaders/shader.vs", "../shaders/shader.fs");
+
+  //colour logic
+  float time, colorAdjust;
 
   // render loop
   while (!glfwWindowShouldClose(window)) {
     // input
     processInput(window);
 
-    // render/draw
+    //---------------------------render/draw--------------------------------------
     glClearColor(0.1f, 0.5f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    //update colour uniforms
+    time = glfwGetTime();
+    colorAdjust = std::abs(std::sin(time*2.0f));
+    shader.setFloat("colorAdj", colorAdjust);
+
 
     //draw triangles
     shader.use();

@@ -15,8 +15,8 @@ class Shader {
         Shader(const char* vertexFilePath, const char* fragmentFilePath){
             //----------------inputing from source files-------------------
             //create code strings and input file streams
-            const char* vertexCode;
-            const char* fragmentCode;
+            std::string vertexStringCode;
+            std::string fragmentStringCode;
             std::ifstream vertexIFS;
             std::ifstream fragmentIFS;
 
@@ -37,12 +37,8 @@ class Shader {
                 //pour text into string streams
                 vertexSS << vertexIFS.rdbuf();
                 fragmentSS << fragmentIFS.rdbuf();
-
-                //add to vertex and fragment code char*
-                std::string vertexStringCode = vertexSS.str();
-                std::string fragmentStringCode = fragmentSS.str();
-                vertexCode = vertexStringCode.c_str();
-                fragmentCode = fragmentStringCode.c_str();
+                vertexStringCode = vertexSS.str();
+                fragmentStringCode = fragmentSS.str();
 
                 //close input file streams
                 vertexIFS.close();
@@ -50,6 +46,10 @@ class Shader {
             } catch (std::ifstream::failure e){
                 std::cout << "FAILED TO READ FROM SHADER FILES\n" << e.what() << std::endl;
             }
+
+            //add to vertex and fragment code char*
+            const char* vertexCode = vertexStringCode.c_str();
+            const char* fragmentCode = fragmentStringCode.c_str();
 
             //create shaders
             unsigned int vertexShader, fragmentShader;
