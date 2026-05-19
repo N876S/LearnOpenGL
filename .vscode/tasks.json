@@ -4,7 +4,7 @@
         {
             "type": "cppbuild",
             "label": "C/C++: Native MSYS2 Clang Build",
-            "command": "C:\\msys64\\ucrt64\\bin\\clang++.exe", // Absolute path to native tool
+            "command": "C:\\msys64\\ucrt64\\bin\\clang++.exe",
             "args": [
                 "-std=c++26",
                 "-g",
@@ -23,7 +23,8 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "detail": "compiler: C:\\msys64\\ucrt64\\bin\\clang++.exe"
         }
     ]
 }
