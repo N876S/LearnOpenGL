@@ -87,10 +87,10 @@ int main() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   stbi_set_flip_vertically_on_load(true);
   int tWidth, tHeight, nrChannels;
-  unsigned char* tData = stbi_load("../res/awesomeface.png", &tWidth, &tHeight, &nrChannels, 0);
+  unsigned char* tData = stbi_load("../res/image.jpg", &tWidth, &tHeight, &nrChannels, 0);
   if(tData != 0){
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tWidth, tHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, tData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tWidth, tHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, tData);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(tData);
   } else {
