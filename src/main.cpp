@@ -4,6 +4,9 @@
 #include "shader.h"
 #include <cmath>
 #include "stb_image.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
@@ -115,10 +118,20 @@ int main() {
     glClearColor(0.1f, 0.5f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //update colour uniforms
+    //update uniforms
+    //colour updates
     time = glfwGetTime();
     colorAdjust = std::abs(std::sin(time*2.0f));
     shader.setFloat("colorAdj", colorAdjust);
+
+    //movement update
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::scale(trans, glm::vec3(sin(time)*0.5f, sin(time)*0.5f, sin(time)*0.5f));
+    trans = glm::rotate(trans, glm::radians((float)sin(time)*180.0f), glm::normalize(glm::vec3(0.5f, 0.7f, 0.5f)));
+    shader.setMatrix4f("trans", trans);
+
+    //3d updates
+    
 
     //draw triangles
     shader.use();

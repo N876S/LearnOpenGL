@@ -22,7 +22,7 @@
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "detail": "compiler: C:\\msys64\\ucrt64\\bin\\clang++.exe"
         }
