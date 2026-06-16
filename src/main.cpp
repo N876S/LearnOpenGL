@@ -156,11 +156,6 @@ int main() {
   //colour logic
   float time, colorAdjust;
 
-  glm::mat4 view = glm::mat4(1.0f);
-  view = glm::translate(view, glm::vec3(5.0f, 0.0f, -15.0f));
-  view = glm::rotate(view, glm::radians(30.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-  view = glm::rotate(view, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
   glm::mat4 proj = glm::mat4(1.0f);
   proj = glm::perspective(glm::radians(45.0f), (float) width / (float) height, 0.1f, 100.0f);
 
@@ -183,6 +178,10 @@ int main() {
     shader.setFloat("colorAdj", colorAdjust);
 
     //3d updates
+    glm::mat4 view = glm::mat4(1.0f);
+    float radius = 10.0f;
+    view = glm::lookAt(glm::vec3(cos(time*2.0f)*radius, 0.0f, sin(time*2.0f)*radius), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
     //create 3d matrices
 
     shader.setMatrix4f("view", view);
@@ -198,7 +197,7 @@ int main() {
     for(glm::vec3 position : cubePositions){
       glm::mat4 model = glm::mat4(1.0f);
       model = glm::translate(model, position);
-      model = glm::rotate(model, glm::radians((float)sin(time)*1000.0f), glm::normalize(glm::vec3(0.0f, 1.0f, 0.0f)));
+      model = glm::rotate(model, glm::radians((float)sin(time)*1000.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
       shader.setMatrix4f("model", model);
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
