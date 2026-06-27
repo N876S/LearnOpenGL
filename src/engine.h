@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "input.h"
 #include "model.h"
+#include "light.h"
 
 class Engine {
     public:
@@ -28,6 +29,8 @@ class Engine {
 
     Camera camera;
     Shader objectShader;
+
+    std::vector<Shader> shaders;
 
     glm::mat4 viewMatrix = glm::mat4(1.0f);
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
@@ -90,7 +93,12 @@ class Engine {
         glm::vec3(-1.3f, 1.0f, -1.5f)
     };
 
-    Model cube;
+    Mesh cube;
+    Model crate;
+
+    Light light;
+    Shader lightShader;
+
     void* inputPointers[3]= {&camera, &deltaTime, &fov};
 
     //---------------------------------CONSTRUCTOR-----------------------------------------
@@ -101,7 +109,12 @@ class Engine {
 
         camera = Camera(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 5.0f, 0.1f);
         objectShader = Shader("../shaders/shader.vs", "../shaders/shader.fs");
-        cube = Model(&objectShader, data, 180, "../res/image.jpg");
+        shaders.push_back(objectShader);
+        cube = Mesh(data, 180);
+        crate = Model(&objectShader, cube, "../res/image.jpg");
+        lightShader = Shader("../shaders/lightShader.vs", "../shaders/lightShader.fs");
+        shaders.push_back(lightShader);
+        light = Light(&lightShader, cube, glm::vec3(4.0f, 0.0f, 0.0f));
 
         glfwSetWindowUserPointer(window, &inputPointers);
     }
@@ -123,20 +136,28 @@ class Engine {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             //set view and proj matrices
-            objectShader.use();
-            objectShader.setMatrix4f("view", camera.getView());
+            viewMatrix = camera.getView();
             projectionMatrix = glm::perspective(glm::radians(fov), (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.1f, 100.0f);
-            objectShader.setMatrix4f("proj", projectionMatrix);
+            setSpaces();
             glfwSetWindowUserPointer(window, &inputPointers);
 
             //render objects
-            cube.render(positions, time);
+            crate.render(positions, time);
+            light.render();
 
             //callbacks & buffers
             glfwPollEvents();
             glfwSwapBuffers(window);
         }
         glfwTerminate();
+    }
+
+    void setSpaces(){
+        for(Shader s : shaders){
+            s.use();
+            s.setMatrix4f("view", viewMatrix);
+            s.setMatrix4f("proj", projectionMatrix);
+        }
     }
 
     void setupGLFW(){

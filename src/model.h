@@ -8,29 +8,25 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.h"
 #include "stb_image.h"
+#include "mesh.h"
 
 class Model {
     public:
 
     //--------------------------------------FIELDS------------------------------------------
-    GLuint VAO;
-    GLuint VBO;
+    
+    Mesh mesh;
     GLuint texture;
-
     Shader shader;
-
-    const float* data;
-    int dataSize;
     const char* textureSource;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
-    Model(Shader* shader, const float* dataSource, int count, const char* textureSource){
+    Model(Shader* shader, Mesh mesh, const char* textureSource){
         this->shader = *shader;
-        this->data = dataSource;
-        this->dataSize = count;
+        this->mesh = mesh;
         this->textureSource = textureSource;
-        createBufferObjects();
+        createTexture();
     }
     Model() = default;
 
@@ -42,7 +38,7 @@ class Model {
 
         //draw triangles
         shader.use();
-        glBindVertexArray(VAO);
+        glBindVertexArray(mesh.getVAO());
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
         for(glm::vec3 position : positions){
@@ -54,21 +50,8 @@ class Model {
         }
     }
     
-    void createBufferObjects(){
-        //create VAO
-        glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-
-        //create VBO
-        glGenBuffers(1, &VBO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, dataSize * sizeof(float), data, GL_STATIC_DRAW);
-
-        //set attributes
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
-        glEnableVertexAttribArray(1);
+    void createTexture(){
+        glBindVertexArray(mesh.getVAO());
         
         //create texture
         glGenTextures(1, &texture);
@@ -95,7 +78,6 @@ class Model {
         //unbind for later use
         glBindVertexArray(0);
     }
-
 };
 
 #endif
