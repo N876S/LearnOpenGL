@@ -33,6 +33,7 @@ class Camera {
             pitch = glm::degrees(asin(cameraDir.y));
             yaw = glm::degrees(glm::atan(cameraDir.z/cameraDir.x));
         }
+        Camera() = default;
         
         void updatePosition(glm::vec3 offset){
             cameraPos += offset;
