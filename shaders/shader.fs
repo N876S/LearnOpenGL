@@ -4,6 +4,8 @@ in vec2 texCoord;
 
 uniform sampler2D textureData;
 
+float ambientStrength = 0.1f;
+
 void main(){
-    fragColor = texture(textureData, texCoord);
+    fragColor = ambientStrength * texture(textureData, texCoord);
 }
