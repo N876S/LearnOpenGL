@@ -103,24 +103,35 @@ class Shader {
             glUseProgram(ID);
         }
         void setInt(const std::string &name, int value){
+            use();
             glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
         }
         void setFloat(const std::string &name, float value){
+            use();
             glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
         }
         void setBool(const std::string &name, bool value){
+            use();
             glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
         }
         void set2f(const std::string &name, float f1, float f2){
+            use();
             glUniform2f(glGetUniformLocation(ID, name.c_str()), f1, f2);
         }
         void set3f(const std::string &name, float f1, float f2, float f3){
+            use();
             glUniform3f(glGetUniformLocation(ID, name.c_str()), f1, f2, f3);
         }
+        void set3f(const std::string &name, glm::vec3 vector){
+            use();
+            glUniform3f(glGetUniformLocation(ID, name.c_str()), vector.x, vector.y, vector.z);
+        }
         void set4f(const std::string &name, float f1, float f2, float f3, float f4){
+            use();
             glUniform4f(glGetUniformLocation(ID, name.c_str()), f1, f2, f3, f4);
         }
         void setMatrix4f(const std::string &name, glm::mat4 matrix){
+            use();
             glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
         }
 };
