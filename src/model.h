@@ -19,6 +19,7 @@ class Model {
     GLuint texture;
     Shader shader;
     const char* textureSource;
+    glm::vec3 color;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
@@ -27,6 +28,11 @@ class Model {
         this->mesh = mesh;
         this->textureSource = textureSource;
         createTexture();
+    }
+    Model(Shader* shader, Mesh mesh, glm::vec3 color){
+        this->shader = *shader;
+        this->mesh = mesh;
+        this->shader.set3f("color", color);
     }
     Model() = default;
 
@@ -44,10 +50,20 @@ class Model {
         for(glm::vec3 position : positions){
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, position);
-            //model = glm::rotate(model, glm::radians((float)sin(time)*1000.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
+            model = glm::rotate(model, glm::radians((float)sin(time)*1000.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
             shader.setMatrix4f("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, mesh.vertexCount/mesh.lineCount);
         }
+    }
+
+    void render(glm::vec3 position, float time){
+        shader.use();
+        glBindVertexArray(mesh.getVAO());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, position);
+        model = glm::scale(model, glm::vec3(50.0f, 1.0f, 50.0f));
+        shader.setMatrix4f("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, mesh.vertexCount/mesh.lineCount);
     }
     
     void createTexture(){

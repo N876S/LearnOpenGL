@@ -13,12 +13,14 @@ class Mesh {
     GLuint VBO;
     const float* data;
     int vertexCount;
+    int lineCount;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
-    Mesh(const float* dataSource, int vertexCount){
+    Mesh(const float* dataSource, int vertexCount, int lineCount){
         this->data = dataSource;
         this->vertexCount = vertexCount;
+        this->lineCount = lineCount;
         createBufferObjects();
     }
     Mesh() = default;
@@ -36,12 +38,16 @@ class Mesh {
         glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(float), data, GL_STATIC_DRAW);
 
         //set attributes
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, lineCount*sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, lineCount*sizeof(float), (void*)(3*sizeof(float)));
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6*sizeof(float)));
-        glEnableVertexAttribArray(2);
+
+        if(lineCount == 8){
+            //texture
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, lineCount*sizeof(float), (void*)(6*sizeof(float)));
+            glEnableVertexAttribArray(2);
+        }
 
         //unbind for later use
         glBindVertexArray(0);

@@ -93,11 +93,23 @@ class Engine {
         glm::vec3(-1.3f, 1.0f, -1.5f)
     };
 
+    float data2[36] = {
+        -0.5f, 0.0f, -0.5f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.0f, -0.5f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f,
+        -0.5f, 0.0f, -0.5f, 0.0f, 1.0f, 0.0f,
+        0.5f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f,
+        -0.5f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f
+    };
+
     Mesh cube;
     Model crate;
+    Mesh platform;
+    Model ground;
 
     Light light;
     Shader lightShader;
+    Shader groundShader;
 
     void* inputPointers[3]= {&camera, &deltaTime, &fov};
 
@@ -108,13 +120,21 @@ class Engine {
         createWindow();
 
         camera = Camera(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 5.0f, 0.1f);
+
         objectShader = Shader("../shaders/shader.vs", "../shaders/shader.fs");
-        shaders.push_back(objectShader);
-        cube = Mesh(data, sizeof(data)/sizeof(data[0]));
-        crate = Model(&objectShader, cube, "../res/image.jpg");
         lightShader = Shader("../shaders/lightShader.vs", "../shaders/lightShader.fs");
+        groundShader = Shader("../shaders/groundShader.vs", "../shaders/groundShader.fs");
+        shaders.push_back(objectShader);
         shaders.push_back(lightShader);
+        shaders.push_back(groundShader);
+
+        cube = Mesh(data, sizeof(data)/sizeof(data[0]), 8);
+        platform = Mesh(data2, sizeof(data2)/sizeof(data2[0]), 6);
+
         light = Light(&lightShader, cube, glm::vec3(4.0f, 0.0f, 0.0f));
+
+        crate = Model(&objectShader, cube, "../res/image.jpg");
+        ground = Model(&groundShader, platform, glm::vec3(0.2f, 0.2f, 0.2f));
 
         glfwSetWindowUserPointer(window, &inputPointers);
     }
@@ -139,12 +159,17 @@ class Engine {
             viewMatrix = camera.getView();
             projectionMatrix = glm::perspective(glm::radians(fov), (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.1f, 100.0f);
             setSpaces();
-            objectShader.set3f("lightPos", light.getPosition());
             glfwSetWindowUserPointer(window, &inputPointers);
+
+            objectShader.set3f("lightPos", light.getPosition());
+            objectShader.set3f("camPos", camera.getPosition());
+            groundShader.set3f("lightPos", light.getPosition());
+            groundShader.set3f("camPos", camera.getPosition());
 
             //render objects
             crate.render(positions, time);
             light.render(time);
+            ground.render(glm::vec3(0.0f, -5.0f, 0.0f), time);
 
             //callbacks & buffers
             glfwPollEvents();

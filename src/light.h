@@ -48,8 +48,9 @@ class Light {
         glBindVertexArray(mesh.getVAO());
 
         glm::mat4 model = glm::mat4(1.0f);
-        position.x = 10.0f*sin(time);
-        position.z = 10.0f*cos(time);
+        //position.x = 10.0f*sin(time);
+        //position.y = 10.0f*cos(time);
+        //position.z = 10.0f*cos(time);
         model = glm::translate(model, position);
         shader.setMatrix4f("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 36);

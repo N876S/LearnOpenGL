@@ -78,6 +78,10 @@ class Camera {
             view = glm::lookAt(cameraPos, cameraDir + cameraPos, cameraUp);
             return view;
         }
+
+        glm::vec3 getPosition(){
+            return cameraPos;
+        }
 };
 
 #endif

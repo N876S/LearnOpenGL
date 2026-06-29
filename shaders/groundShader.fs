@@ -2,13 +2,12 @@
 
 out vec4 fragColor;
 
-in vec2 texCoord;
 in vec3 normal;
 in vec3 worldFragPos;
 in vec3 cameraPosition;
 
-uniform sampler2D textureData;
 uniform vec3 lightPos;
+uniform vec3 color;
 
 void main(){
     float ambientStrength = 0.1f;
@@ -23,5 +22,5 @@ void main(){
     vec3 cameraDirection = normalize(cameraPosition - worldFragPos);
     float specular = pow(max(dot(reflection, cameraDirection), 0.0f), 32);
 
-    fragColor = (ambientStrength + diffuse + specular) * texture(textureData, texCoord);
+    fragColor = (ambientStrength + diffuse + specular) * vec4(color, 1.0f);
 }
