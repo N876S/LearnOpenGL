@@ -9,6 +9,7 @@
 #include "shader.h"
 #include "stb_image.h"
 #include "mesh.h"
+#include "material.h"
 
 class Model {
     public:
@@ -20,18 +21,24 @@ class Model {
     Shader shader;
     const char* textureSource;
     glm::vec3 color;
+    MaterialType materialType;
+    MaterialConfig materialConfig;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
-    Model(Shader* shader, Mesh mesh, const char* textureSource){
+    Model(Shader* shader, Mesh mesh, const char* textureSource, MaterialType material){
         this->shader = *shader;
         this->mesh = mesh;
         this->textureSource = textureSource;
+        this->materialType = material;
+        this->materialConfig = getMaterial(material);
         createTexture();
     }
-    Model(Shader* shader, Mesh mesh, glm::vec3 color){
+    Model(Shader* shader, Mesh mesh, glm::vec3 color, MaterialType material){
         this->shader = *shader;
         this->mesh = mesh;
+        this->materialType = material;
+        this->materialConfig = getMaterial(material);
         this->shader.set3f("color", color);
     }
     Model() = default;
@@ -93,6 +100,10 @@ class Model {
         glBindTexture(GL_TEXTURE_2D, 0);
         //unbind for later use
         glBindVertexArray(0);
+    }
+
+    MaterialType getMaterialType(){
+        return MaterialType();
     }
 };
 
