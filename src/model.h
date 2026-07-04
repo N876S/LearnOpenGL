@@ -32,6 +32,7 @@ class Model {
         this->textureSource = textureSource;
         this->materialType = material;
         this->materialConfig = getMaterial(material);
+        setMaterial();
         createTexture();
     }
     Model(Shader* shader, Mesh mesh, glm::vec3 color, MaterialType material){
@@ -40,6 +41,7 @@ class Model {
         this->materialType = material;
         this->materialConfig = getMaterial(material);
         this->shader.set3f("color", color);
+        setMaterial();
     }
     Model() = default;
 
@@ -71,6 +73,13 @@ class Model {
         model = glm::scale(model, glm::vec3(50.0f, 1.0f, 50.0f));
         shader.setMatrix4f("model", model);
         glDrawArrays(GL_TRIANGLES, 0, mesh.vertexCount/mesh.lineCount);
+    }
+
+    void setMaterial(){
+        shader.set3f("material.ambient", materialConfig.ambient);
+        shader.set3f("material.diffuse", materialConfig.diffuse);
+        shader.set3f("material.specular", materialConfig.specular);
+        shader.setFloat("material.shininess", materialConfig.shininess);
     }
     
     void createTexture(){

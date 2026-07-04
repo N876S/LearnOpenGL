@@ -13,13 +13,26 @@ class Light {
     Shader shader;
 
     glm::vec3 position;
+    glm::vec3 color;
+
+    struct Intensity {
+        float ambient;
+        float diffuse;
+        float specular;
+    };
+
+    Intensity intensity;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
-    Light(Shader* shader, Mesh mesh, glm::vec3 position){
+    Light(Shader* shader, Mesh mesh, glm::vec3 position, glm::vec3 color, Intensity intensity){
         this->shader = *shader;
         this->mesh = mesh;
         this->position = position;
+        this->color = color;
+        this->intensity = intensity;
+
+        this->shader.set3f("lightColor", color);
     }
     Light() = default;
 
@@ -47,17 +60,35 @@ class Light {
         shader.use();
         glBindVertexArray(mesh.getVAO());
 
-        glm::mat4 model = glm::mat4(1.0f);
-        //position.x = 10.0f*sin(time);
+        position.x = 5.0f*sin(time);
         //position.y = 10.0f*cos(time);
-        //position.z = 10.0f*cos(time);
+        position.z = 5.0f*cos(time);
+        shader.set3f("lightColor", color);
+
+        //model matrix
+        glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, position);
         shader.setMatrix4f("model", model);
+
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
     glm::vec3 getPosition(){
         return position;
+    }
+
+    glm::vec3 getColor(){
+        return color;
+    }
+
+    Intensity getIntensity(){
+        return intensity;
+    }
+
+    void setColor(glm::vec3 color){
+        this->color.x = color.x;
+        this->color.y = color.y;
+        this->color.z = color.z;
     }
 };
 

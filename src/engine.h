@@ -131,10 +131,10 @@ class Engine {
         cube = Mesh(data, sizeof(data)/sizeof(data[0]), 8);
         platform = Mesh(data2, sizeof(data2)/sizeof(data2[0]), 6);
 
-        light = Light(&lightShader, cube, glm::vec3(4.0f, 0.0f, 0.0f));
+        light = Light(&lightShader, cube, glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), {0.2f, 0.5f, 1.0f});
 
-        crate = Model(&objectShader, cube, "../res/image.jpg");
-        ground = Model(&groundShader, platform, glm::vec3(0.2f, 0.2f, 0.2f));
+        crate = Model(&objectShader, cube, "../res/image.jpg", MaterialType::Emerald);
+        ground = Model(&groundShader, platform, glm::vec3(0.2f, 0.2f, 0.2f), MaterialType::Obsidian);
 
         glfwSetWindowUserPointer(window, &inputPointers);
     }
@@ -161,10 +161,11 @@ class Engine {
             setSpaces();
             glfwSetWindowUserPointer(window, &inputPointers);
 
-            objectShader.set3f("lightPos", light.getPosition());
+            light.setColor(glm::vec3(abs(sin(time)), 1.0f, 1.0f));
+
             objectShader.set3f("camPos", camera.getPosition());
-            groundShader.set3f("lightPos", light.getPosition());
             groundShader.set3f("camPos", camera.getPosition());
+            setLights();
 
             //render objects
             crate.render(positions, time);
@@ -176,6 +177,20 @@ class Engine {
             glfwSwapBuffers(window);
         }
         glfwTerminate();
+    }
+
+    void setLights(){
+        objectShader.set3f("light.pos", light.getPosition());
+        objectShader.set3f("light.color", light.getColor());
+        objectShader.setFloat("light.ambient", light.getIntensity().ambient);
+        objectShader.setFloat("light.diffuse", light.getIntensity().diffuse);
+        objectShader.setFloat("light.specular", light.getIntensity().specular);
+
+        groundShader.set3f("light.pos", light.getPosition());
+        groundShader.set3f("light.color", light.getColor());
+        groundShader.setFloat("light.ambient", light.getIntensity().ambient);
+        groundShader.setFloat("light.diffuse", light.getIntensity().diffuse);
+        groundShader.setFloat("light.specular", light.getIntensity().specular);
     }
 
     void setSpaces(){
