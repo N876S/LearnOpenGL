@@ -60,9 +60,9 @@ class Light {
         shader.use();
         glBindVertexArray(mesh.getVAO());
 
-        position.x = 5.0f*sin(time);
+        //position.x = 5.0f*sin(time);
         //position.y = 10.0f*cos(time);
-        position.z = 5.0f*cos(time);
+        //position.z = 5.0f*cos(time);
         shader.set3f("lightColor", color);
 
         //model matrix

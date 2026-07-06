@@ -131,9 +131,9 @@ class Engine {
         cube = Mesh(data, sizeof(data)/sizeof(data[0]), 8);
         platform = Mesh(data2, sizeof(data2)/sizeof(data2[0]), 6);
 
-        light = Light(&lightShader, cube, glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), {0.2f, 0.5f, 1.0f});
+        light = Light(&lightShader, cube, glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), {0.4f, 0.6f, 1.0f});
 
-        crate = Model(&objectShader, cube, "../res/image.jpg", MaterialType::Emerald);
+        crate = Model(&objectShader, cube, "../res/container.png", "../res/specularmap.png", MaterialType::Brass);
         ground = Model(&groundShader, platform, glm::vec3(0.2f, 0.2f, 0.2f), MaterialType::Obsidian);
 
         glfwSetWindowUserPointer(window, &inputPointers);
