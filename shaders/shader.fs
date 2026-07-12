@@ -42,7 +42,7 @@ void main(){
 
 //calculate direction light
 vec3 getDirLightFactor(DirLight light, vec3 normal, vec3 cameraDirection){
-    vec3 fixedLightDir = normalize(light.pos - worldFragPos);
+    vec3 fixedLightDir = normalize(-light.direction);
     vec3 reflection = reflect(-fixedLightDir, normal);
 
     //ambient calculation

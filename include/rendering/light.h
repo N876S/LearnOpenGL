@@ -9,12 +9,7 @@ class Light {
 
     //--------------------------------------FIELDS------------------------------------------
     
-    //Mesh mesh; -> only for point
-    //Shader shader; -> only for point
-
-    //glm::vec3 position; -> only for point
     glm::vec3 color;
-
     struct Intensity {
         float ambient;
         float diffuse;
@@ -29,10 +24,6 @@ class Light {
 
     //--------------------------------------METHODS--------------------------------------------
 
-    virtual void render(const std::vector<glm::vec3> &positions, float time) = 0;
-    virtual void render(float time) = 0;
-
-    glm::vec3 getPosition();
     glm::vec3 getColor();
     Intensity getIntensity();
 
@@ -52,6 +43,27 @@ class DirectionalLight : public Light {
     DirectionalLight() = default;
 
     //--------------------------------------METHODS--------------------------------------------
+};
+
+class PointLight : public Light {
+    public:
+
+    //--------------------------------------FIELDS------------------------------------------
+
+    Mesh mesh;
+    Shader shader;
+
+    glm::vec3 position;
+
+    //------------------------------------CONSTRUCTOR------------------------------------------
+
+    PointLight(Shader* shader, Mesh mesh, glm::vec3 color, Intensity intensity);
+    PointLight() = default;
+
+    //--------------------------------------METHODS--------------------------------------------
+
+    void render(float time);
+    glm::vec3 getPosition();
 };
 
 #endif

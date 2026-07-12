@@ -6,10 +6,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "shader.h"
-#include "stb_image.h"
-#include "mesh.h"
-#include "material.h"
+#include "rendering/shader.h"
+#include "stb_image/stb_image.h"
+#include "rendering/mesh.h"
+#include "rendering/material.h"
 
 class Model {
     public:

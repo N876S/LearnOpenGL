@@ -29,8 +29,8 @@
       "args": [],
       "stopAtEntry": false,
       "console": "externalTerminal",
-      "cwd": "c:/Coding/C++Projects/LearnOpenGL/src",
-      "program": "c:/Coding/C++Projects/LearnOpenGL/src/build/Debug/outDebug"
+      "cwd": "c:/Coding/C++Projects/LearnOpenGL/include/glad",
+      "program": "c:/Coding/C++Projects/LearnOpenGL/include/glad/build/Debug/outDebug"
     }
   ]
 }

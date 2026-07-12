@@ -8,9 +8,17 @@
             "args": [
                 "-std=c++26",
                 "-g",
-                "${workspaceFolder}/src/*.cpp",
+
+                //include every source file explicitly by its subfolder path
+                "${workspaceFolder}/src/core/*.cpp",
+                "${workspaceFolder}/src/systems/*.cpp",
+                "${workspaceFolder}/src/rendering/*.cpp",
                 "${workspaceFolder}/src/glad.c",
+
+                //header search paths
                 "-I${workspaceFolder}/include",
+
+                //linker flags
                 "-lglfw3",
                 "-lopengl32",
                 "-lgdi32",

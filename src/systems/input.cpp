@@ -1,12 +1,6 @@
-#ifndef INPUT_H
-#define INPUT_H
+#include "systems/input.h"
 
-#include <glad/glad.h>  //must be before glfw
-#include <GLFW/glfw3.h>
-#include <iostream>
-#include "camera.h"
-
-void processInput(GLFWwindow* window) {
+void InputManager::processInput(GLFWwindow* window) {
   void** pointers = (void**)glfwGetWindowUserPointer(window);
   Camera* cameraLoc = (Camera*)pointers[0];
   Camera& camera = *cameraLoc;
@@ -40,7 +34,7 @@ void processInput(GLFWwindow* window) {
   }
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos){
+void InputManager::mouse_callback(GLFWwindow* window, double xpos, double ypos){
   void** pointers = (void**)glfwGetWindowUserPointer(window);
   Camera* cameraLoc = (Camera*)pointers[0];
   Camera& camera = *cameraLoc;
@@ -48,7 +42,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos){
   camera.updateDirection(xpos, ypos);
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
+void InputManager::scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
   void** pointers = (void**)glfwGetWindowUserPointer(window);
   float* fovPointer = (float*)pointers[2];
   float& fov = *fovPointer;
@@ -62,8 +56,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
   }
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void InputManager::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
 }
-
-#endif
