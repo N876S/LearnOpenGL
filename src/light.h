@@ -9,10 +9,10 @@ class Light {
 
     //--------------------------------------FIELDS------------------------------------------
     
-    Mesh mesh;
-    Shader shader;
+    //Mesh mesh; -> only for point
+    //Shader shader; -> only for point
 
-    glm::vec3 position;
+    //glm::vec3 position; -> only for point
     glm::vec3 color;
 
     struct Intensity {
@@ -25,71 +25,33 @@ class Light {
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
-    Light(Shader* shader, Mesh mesh, glm::vec3 position, glm::vec3 color, Intensity intensity){
-        this->shader = *shader;
-        this->mesh = mesh;
-        this->position = position;
-        this->color = color;
-        this->intensity = intensity;
-
-        this->shader.set3f("lightColor", color);
-    }
-    Light() = default;
+    virtual ~Light() = default;
 
     //--------------------------------------METHODS--------------------------------------------
 
-    void render(const std::vector<glm::vec3> &positions, float time){
-        //get count
-        int count = positions.size();
+    virtual void render(const std::vector<glm::vec3> &positions, float time) = 0;
+    virtual void render(float time) = 0;
 
-        //draw triangles
-        shader.use();
-        glBindVertexArray(mesh.getVAO());
+    glm::vec3 getPosition();
+    glm::vec3 getColor();
+    Intensity getIntensity();
 
-        for(glm::vec3 position : positions){
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, position);
-            model = glm::rotate(model, glm::radians((float)sin(time)*1000.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f)));
-            shader.setMatrix4f("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-    }
+    void setColor(glm::vec3 color);
+};
 
-    void render(float time){
-        //draw triangles
-        shader.use();
-        glBindVertexArray(mesh.getVAO());
+class DirectionalLight : public Light {
+    public:
 
-        //position.x = 5.0f*sin(time);
-        //position.y = 10.0f*cos(time);
-        //position.z = 5.0f*cos(time);
-        shader.set3f("lightColor", color);
+    //--------------------------------------FIELDS------------------------------------------
 
-        //model matrix
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, position);
-        shader.setMatrix4f("model", model);
+    glm::vec3 direction;
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
+    //------------------------------------CONSTRUCTOR------------------------------------------
 
-    glm::vec3 getPosition(){
-        return position;
-    }
+    DirectionalLight(glm::vec3 color, Intensity intensity, glm::vec3 direction);
+    DirectionalLight() = default;
 
-    glm::vec3 getColor(){
-        return color;
-    }
-
-    Intensity getIntensity(){
-        return intensity;
-    }
-
-    void setColor(glm::vec3 color){
-        this->color.x = color.x;
-        this->color.y = color.y;
-        this->color.z = color.z;
-    }
+    //--------------------------------------METHODS--------------------------------------------
 };
 
 #endif

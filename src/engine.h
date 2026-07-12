@@ -107,8 +107,8 @@ class Engine {
     Mesh platform;
     Model ground;
 
-    Light light;
-    Shader lightShader;
+    //Light light;
+    //Shader lightShader;
     Shader groundShader;
 
     void* inputPointers[3]= {&camera, &deltaTime, &fov};
@@ -122,16 +122,16 @@ class Engine {
         camera = Camera(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 5.0f, 0.1f);
 
         objectShader = Shader("../shaders/shader.vs", "../shaders/shader.fs");
-        lightShader = Shader("../shaders/lightShader.vs", "../shaders/lightShader.fs");
+        //lightShader = Shader("../shaders/lightShader.vs", "../shaders/lightShader.fs");
         groundShader = Shader("../shaders/groundShader.vs", "../shaders/groundShader.fs");
         shaders.push_back(objectShader);
-        shaders.push_back(lightShader);
+        //shaders.push_back(lightShader);
         shaders.push_back(groundShader);
 
         cube = Mesh(data, sizeof(data)/sizeof(data[0]), 8);
         platform = Mesh(data2, sizeof(data2)/sizeof(data2[0]), 6);
 
-        light = Light(&lightShader, cube, glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), {0.4f, 0.6f, 1.0f});
+        //light = Light(&lightShader, cube, glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), {0.4f, 0.6f, 1.0f});
 
         crate = Model(&objectShader, cube, "../res/container.png", "../res/specularmap.png", MaterialType::Brass);
         ground = Model(&groundShader, platform, glm::vec3(0.2f, 0.2f, 0.2f), MaterialType::Obsidian);
@@ -161,15 +161,15 @@ class Engine {
             setSpaces();
             glfwSetWindowUserPointer(window, &inputPointers);
 
-            light.setColor(glm::vec3(abs(sin(time)), 1.0f, 1.0f));
+            //light.setColor(glm::vec3(abs(sin(time)), 1.0f, 1.0f));
 
             objectShader.set3f("camPos", camera.getPosition());
             groundShader.set3f("camPos", camera.getPosition());
-            setLights();
+            //setLights();
 
             //render objects
             crate.render(positions, time);
-            light.render(time);
+            //light.render(time);
             ground.render(glm::vec3(0.0f, -5.0f, 0.0f), time);
 
             //callbacks & buffers
@@ -179,6 +179,7 @@ class Engine {
         glfwTerminate();
     }
 
+    /*
     void setLights(){
         objectShader.set3f("light.pos", light.getPosition());
         objectShader.set3f("light.color", light.getColor());
@@ -191,7 +192,7 @@ class Engine {
         groundShader.setFloat("light.ambient", light.getIntensity().ambient);
         groundShader.setFloat("light.diffuse", light.getIntensity().diffuse);
         groundShader.setFloat("light.specular", light.getIntensity().specular);
-    }
+    }*/
 
     void setSpaces(){
         for(Shader s : shaders){
