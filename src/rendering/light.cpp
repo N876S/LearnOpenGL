@@ -3,6 +3,7 @@
 DirectionalLight::DirectionalLight(glm::vec3 color, Intensity intensity, glm::vec3 direction){
     this->color = color;
     this->intensity = intensity;
+    this->direction = direction;
 }
 
 PointLight::PointLight(Shader* shader, Mesh mesh, glm::vec3 color, Intensity intensity){
@@ -42,6 +43,10 @@ glm::vec3 Light::getColor(){
 
 Light::Intensity Light::getIntensity(){
     return intensity;
+}
+
+glm::vec3 DirectionalLight::getDirection(){
+    return direction;
 }
 
 void Light::setColor(glm::vec3 color){

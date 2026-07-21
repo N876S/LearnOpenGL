@@ -43,6 +43,8 @@ class DirectionalLight : public Light {
     DirectionalLight() = default;
 
     //--------------------------------------METHODS--------------------------------------------
+
+    glm::vec3 getDirection();
 };
 
 class PointLight : public Light {

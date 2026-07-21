@@ -109,7 +109,7 @@ class Engine {
     Mesh platform;
     Model ground;
 
-    //Light light;
+    DirectionalLight light;
     //Shader lightShader;
     Shader groundShader;
 
