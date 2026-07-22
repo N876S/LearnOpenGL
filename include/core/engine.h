@@ -1,5 +1,4 @@
-#ifndef ENGINE_H
-#define ENGINE_H
+#pragma once
 
 #include <glad/glad.h>  //must be before glfw
 #include <GLFW/glfw3.h>
@@ -11,18 +10,18 @@
 #include "rendering/light.h"
 
 class Engine {
-    public:
+    private:
 
     //-----------------------------------FIELDS-------------------------------------------
+
+    GLFWwindow* window;
+    InputManager inputManager;
 
     static const int WINDOW_WIDTH = 1920;
     static const int WINDOW_HEIGHT = 1080;
     const char* WINDOW_NAME = "LearnOpenGL";
     const int OPENGL_VERSION_MAJOR = 4;
     const int OPENGL_VERSION_MINOR = 6;
-
-    GLFWwindow* window;
-    InputManager inputManager;
 
     float fov = 45.0f;
     float time = glfwGetTime();
@@ -115,6 +114,8 @@ class Engine {
 
     void* inputPointers[3]= {&camera, &deltaTime, &fov};
 
+    public:
+
     //---------------------------------CONSTRUCTOR-----------------------------------------
 
     Engine();
@@ -130,6 +131,11 @@ class Engine {
     void createWindow();
     void createShaders();
     void createObjects();
-};
 
-#endif
+    static int getWindowWidth(){
+        return WINDOW_WIDTH;
+    }
+    static int getWindowHeight(){
+        return WINDOW_HEIGHT;
+    }
+};

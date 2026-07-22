@@ -6,8 +6,8 @@ Camera::Camera(glm::vec3 cameraPos, glm::vec3 cameraDir, float movementSpeed, fl
     this->cameraDir = cameraDir;
     this->movementSpeed = movementSpeed;
     this->sensitivity = sensitivity;
-    lastMouseX = Engine::WINDOW_WIDTH/2.0f;
-    lastMouseY = Engine::WINDOW_HEIGHT/2.0f;
+    lastMouseX = Engine::getWindowWidth()/2.0f;
+    lastMouseY = Engine::getWindowHeight()/2.0f;
     updateBasis();
 
     pitch = glm::degrees(asin(cameraDir.y));

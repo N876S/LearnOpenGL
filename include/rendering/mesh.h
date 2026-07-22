@@ -1,5 +1,4 @@
-#ifndef MESH_H
-#define MESH_H
+#pragma once
 
 #include <glad/glad.h>  //must be before glfw
 #include <GLFW/glfw3.h>
@@ -27,5 +26,3 @@ class Mesh {
     GLuint getVBO();
     GLuint getVAO();
 };
-
-#endif

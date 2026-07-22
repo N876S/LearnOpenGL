@@ -1,5 +1,4 @@
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -122,5 +121,3 @@ inline MaterialConfig getMaterial(MaterialType material){
         
     }
 }
-
-#endif

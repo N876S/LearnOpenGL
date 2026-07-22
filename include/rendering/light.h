@@ -1,5 +1,4 @@
-#ifndef LIGHT_H
-#define LIGHT_H
+#pragma once
 
 #include "mesh.h"
 #include "shader.h"
@@ -67,5 +66,3 @@ class PointLight : public Light {
     void render(float time);
     glm::vec3 getPosition();
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef MODEL_H
-#define MODEL_H
+#pragma once
 
 #include <glad/glad.h>  //must be before glfw
 #include <GLFW/glfw3.h>
@@ -44,5 +43,3 @@ class Model {
 
     MaterialType getMaterialType();
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef INPUT_H
-#define INPUT_H
+#pragma once
 
 #include <glad/glad.h>  //must be before glfw
 #include <GLFW/glfw3.h>
@@ -17,5 +16,3 @@ class InputManager {
   static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
   static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
-
-#endif

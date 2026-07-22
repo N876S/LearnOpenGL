@@ -1,5 +1,4 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#pragma once
 
 #include <cmath>
 #include <glm/glm.hpp>
@@ -40,5 +39,3 @@ class Camera {
     glm::mat4 getView();
     glm::vec3 getPosition();
 };
-
-#endif

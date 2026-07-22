@@ -2,8 +2,8 @@
 
 int main() {
 
-  Engine mainEngine = Engine();
-  mainEngine.render();
+  Engine engine = Engine();
+  engine.render();
 
   return 0;
 }
