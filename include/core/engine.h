@@ -108,8 +108,9 @@ class Engine {
     Mesh platform;
     Model ground;
 
-    DirectionalLight light;
-    //Shader lightShader;
+    DirectionalLight light1;
+    PointLight light2;
+    Shader lightShader;
     Shader groundShader;
 
     void* inputPointers[3]= {&camera, &deltaTime, &fov};

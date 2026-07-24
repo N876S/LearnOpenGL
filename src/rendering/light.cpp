@@ -6,11 +6,13 @@ DirectionalLight::DirectionalLight(glm::vec3 color, Intensity intensity, glm::ve
     this->direction = direction;
 }
 
-PointLight::PointLight(Shader* shader, Mesh mesh, glm::vec3 color, Intensity intensity){
+PointLight::PointLight(Shader* shader, Mesh mesh, glm::vec3 position, glm::vec3 color, Intensity intensity, Attenuation att){
     this->shader = *shader;
     this->mesh = mesh;
     this->color = color;
     this->intensity = intensity;
+    this->att = att;
+    this->position = position;
 
     this->shader.set3f("lightColor", color);
 }
@@ -20,9 +22,9 @@ void PointLight::render(float time){
     shader.use();
     glBindVertexArray(mesh.getVAO());
 
-    //position.x = 5.0f*sin(time);
+    position.x = 5.0f*sin(time);
     //position.y = 10.0f*cos(time);
-    //position.z = 5.0f*cos(time);
+    position.z = 5.0f*cos(time);
     shader.set3f("lightColor", color);
 
     //model matrix
@@ -43,6 +45,10 @@ glm::vec3 Light::getColor(){
 
 Light::Intensity Light::getIntensity(){
     return intensity;
+}
+
+PointLight::Attenuation PointLight::getAtt(){
+    return att;
 }
 
 glm::vec3 DirectionalLight::getDirection(){

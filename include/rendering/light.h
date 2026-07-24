@@ -56,13 +56,22 @@ class PointLight : public Light {
 
     glm::vec3 position;
 
+    struct Attenuation {
+        float constant;
+        float linear;
+        float quadratic;
+    };
+
+    Attenuation att;
+
     //------------------------------------CONSTRUCTOR------------------------------------------
 
-    PointLight(Shader* shader, Mesh mesh, glm::vec3 color, Intensity intensity);
+    PointLight(Shader* shader, Mesh mesh, glm::vec3 position, glm::vec3 color, Intensity intensity, Attenuation att);
     PointLight() = default;
 
     //--------------------------------------METHODS--------------------------------------------
 
     void render(float time);
     glm::vec3 getPosition();
+    Attenuation getAtt();
 };

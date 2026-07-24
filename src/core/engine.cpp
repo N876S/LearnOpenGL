@@ -20,10 +20,10 @@ Engine::Engine(){
 
 void Engine::createShaders(){
     objectShader = Shader("../shaders/shader.vs", "../shaders/shader.fs");
-    //lightShader = Shader("../shaders/lightShader.vs", "../shaders/lightShader.fs");
+    lightShader = Shader("../shaders/lightShader.vs", "../shaders/lightShader.fs");
     groundShader = Shader("../shaders/groundShader.vs", "../shaders/groundShader.fs");
     shaders.push_back(objectShader);
-    //shaders.push_back(lightShader);
+    shaders.push_back(lightShader);
     shaders.push_back(groundShader);
 }
 
@@ -33,7 +33,8 @@ void Engine::createObjects(){
     platform = Mesh(data2, sizeof(data2)/sizeof(data2[0]), 6);
 
     //create lights
-    light = DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f), {0.5f, 0.8f, 1.0f}, glm::vec3(0.0f, -1.0f, 0.0f));
+    light1 = DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f), {0.5f, 0.7f, 1.0f}, glm::vec3(0.0f, -1.0f, 0.0f));
+    light2 = PointLight(&lightShader, cube, glm::vec3(-4.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), {0.2f, 1.0f, 1.0f}, {1.0f, 0.022f, 0.0019f});
 
     //create models
     crate = Model(&objectShader, cube, "../res/container.png", "../res/specularmap.png", MaterialType::Brass);
@@ -67,6 +68,7 @@ void Engine::render(){
         //render objects
         crate.render(positions, time);
         ground.render(glm::vec3(0.0f, -5.0f, 0.0f), time);
+        light2.render(time);
 
         //callbacks & buffers
         glfwPollEvents();
@@ -77,18 +79,25 @@ void Engine::render(){
 
 
 void Engine::setLights(){
-    objectShader.set3f("dirLight.direction", ((DirectionalLight)light).getDirection());
-    objectShader.set3f("dirLight.color", light.getColor());
-    objectShader.setFloat("dirLight.ambient", light.getIntensity().ambient);
-    objectShader.setFloat("dirLight.diffuse", light.getIntensity().diffuse);
-    objectShader.setFloat("dirLight.specular", light.getIntensity().specular);
-    /*
-    groundShader.set3f("light.pos", light.getPosition());
-    groundShader.set3f("light.color", light.getColor());
-    groundShader.setFloat("light.ambient", light.getIntensity().ambient);
-    groundShader.setFloat("light.diffuse", light.getIntensity().diffuse);
-    groundShader.setFloat("light.specular", light.getIntensity().specular);
-    */
+    for(Shader s : shaders){
+        if(s.ID == lightShader.ID){
+            continue;
+        }
+        s.set3f("dirLight.direction", light1.getDirection());
+        s.set3f("dirLight.color", light1.getColor());
+        s.setFloat("dirLight.ambient", light1.getIntensity().ambient);
+        s.setFloat("dirLight.diffuse", light1.getIntensity().diffuse);
+        s.setFloat("dirLight.specular", light1.getIntensity().specular);
+
+        s.set3f("pointLights[0].position", light2.getPosition());
+        s.set3f("pointLights[0].color", light2.getColor());
+        s.setFloat("pointLights[0].constant", light2.getAtt().constant);
+        s.setFloat("pointLights[0].linear", light2.getAtt().linear);
+        s.setFloat("pointLights[0].quadratic", light2.getAtt().quadratic);
+        s.setFloat("pointLights[0].ambient", light2.getIntensity().ambient);
+        s.setFloat("pointLights[0].diffuse", light2.getIntensity().diffuse);
+        s.setFloat("pointLights[0].specular", light2.getIntensity().specular);
+    }
 }
 
 void Engine::setSpaces(){
