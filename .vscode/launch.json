@@ -2,15 +2,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run OpenGL App (MSYS2 Clang)",
+      "name": "C/C++: Native MSYS2 Clang Build",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}\\build\\main.exe",
+      "program": "${workspaceFolder}/build/main.exe",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${fileDirname}",
+      "cwd": "${workspaceFolder}/build",
       "environment": [],
-      "externalConsole": false,
+      "externalConsole": true,
       "MIMode": "gdb",
       "miDebuggerPath": "C:\\msys64\\ucrt64\\bin\\gdb.exe",
       "setupCommands": [
