@@ -110,6 +110,8 @@ class Engine {
 
     DirectionalLight light1;
     PointLight light2;
+    SpotLight light3;
+    
     Shader lightShader;
     Shader groundShader;
 

@@ -75,3 +75,20 @@ class PointLight : public Light {
     glm::vec3 getPosition();
     Attenuation getAtt();
 };
+
+class SpotLight : public Light {
+    public:
+
+    //--------------------------------------FIELDS------------------------------------------
+    
+    float cutOff;
+
+    //------------------------------------CONSTRUCTOR------------------------------------------
+
+    SpotLight(float cutOff, glm::vec3 color);
+    SpotLight() = default;
+
+    //--------------------------------------METHODS--------------------------------------------
+
+    float getCosCutoff();
+};

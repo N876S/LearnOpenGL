@@ -35,15 +35,24 @@ struct PointLight {
     float specular;
 };
 
+struct SpotLight {
+    vec3 color;
+
+    float cosCutOff;
+    vec3 spotDir;
+};
+
 uniform Material material;
 uniform DirLight dirLight;
 #define NR_POINT_LIGHTS 1
 uniform PointLight pointLights[NR_POINT_LIGHTS];
+uniform SpotLight spotLight;
 
 uniform sampler2D textureData;
 
 vec3 getDirLightFactor(DirLight light, vec3 normal, vec3 cameraDirection);
 vec3 getPointLightFactor(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 getSpotLightFactor(SpotLight light, vec3 fragPos);
 
 void main(){
     //important vector calculations (global to pass into functions)
@@ -56,6 +65,7 @@ void main(){
     for(int i = 0; i < NR_POINT_LIGHTS; i++){
         outputLightColor += getPointLightFactor(pointLights[i], fixedNormals, worldFragPos, cameraDirection);
     }
+    outputLightColor += getSpotLightFactor(spotLight, worldFragPos);
     
     fragColor = vec4(outputLightColor, 1.0f) * texture(textureData, texCoord);
 }
@@ -104,4 +114,18 @@ vec3 getPointLightFactor(PointLight light, vec3 normal, vec3 fragPos, vec3 camer
     specular *= attenuationFactor;
 
     return (ambient + diffuse + specular);
+}
+
+//calculate spot light
+vec3 getSpotLightFactor(SpotLight light, vec3 fragPos){
+    vec3 fixedLightDir = normalize(fragPos - cameraPosition);
+
+    float cosCutoffFrag = dot(fixedLightDir, light.spotDir);
+    if(cosCutoffFrag > light.cosCutOff){
+        //light
+        return light.color;
+    } else {
+        //no light
+        return vec3(0.0f, 0.0f, 0.0f);
+    }
 }

@@ -61,3 +61,7 @@ glm::mat4 Camera::getView(){
 glm::vec3 Camera::getPosition(){
     return cameraPos;
 }
+
+glm::vec3 Camera::getDir(){
+    return cameraDir;
+}

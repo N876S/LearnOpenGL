@@ -35,6 +35,7 @@ void Engine::createObjects(){
     //create lights
     light1 = DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f), {0.5f, 0.7f, 1.0f}, glm::vec3(0.0f, -1.0f, 0.0f));
     light2 = PointLight(&lightShader, cube, glm::vec3(-4.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), {0.2f, 1.0f, 1.0f}, {1.0f, 0.022f, 0.0019f});
+    light3 = SpotLight(10.0f, glm::vec3(1.0f, 1.0f, 1.0f));
 
     //create models
     crate = Model(&objectShader, cube, "../res/container.png", "../res/specularmap.png", MaterialType::Brass);
@@ -98,6 +99,9 @@ void Engine::setLights(){
         s.setFloat("pointLights[0].diffuse", light2.getIntensity().diffuse);
         s.setFloat("pointLights[0].specular", light2.getIntensity().specular);
     }
+    objectShader.set3f("spotLight.color", light3.getColor());
+    objectShader.setFloat("spotLight.cosCutOff", light3.getCosCutoff());
+    objectShader.set3f("spotLight.spotDir", camera.getDir());
 }
 
 void Engine::setSpaces(){

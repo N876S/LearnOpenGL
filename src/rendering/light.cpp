@@ -17,6 +17,11 @@ PointLight::PointLight(Shader* shader, Mesh mesh, glm::vec3 position, glm::vec3 
     this->shader.set3f("lightColor", color);
 }
 
+SpotLight::SpotLight(float cutOff, glm::vec3 color){
+    this->cutOff = cutOff;
+    this->color = color;
+}
+
 void PointLight::render(float time){
     //draw triangles
     shader.use();
@@ -59,4 +64,8 @@ void Light::setColor(glm::vec3 color){
     this->color.x = color.x;
     this->color.y = color.y;
     this->color.z = color.z;
+}
+
+float SpotLight::getCosCutoff(){
+    return cos(glm::radians(cutOff));
 }

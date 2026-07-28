@@ -38,4 +38,5 @@ class Camera {
 
     glm::mat4 getView();
     glm::vec3 getPosition();
+    glm::vec3 getDir();
 };
