@@ -35,7 +35,7 @@ void Engine::createObjects(){
     //create lights
     light1 = DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f), {0.5f, 0.7f, 1.0f}, glm::vec3(0.0f, -1.0f, 0.0f));
     light2 = PointLight(&lightShader, cube, glm::vec3(-4.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), {0.2f, 1.0f, 1.0f}, {1.0f, 0.022f, 0.0019f});
-    light3 = SpotLight(10.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+    light3 = SpotLight(5.0f, 10.0f, glm::vec3(1.0f, 1.0f, 1.0f), {0.2f, 1.0f, 1.0f});
 
     //create models
     crate = Model(&objectShader, cube, "../res/container.png", "../res/specularmap.png", MaterialType::Brass);
@@ -62,8 +62,6 @@ void Engine::render(){
         setSpaces();
         glfwSetWindowUserPointer(window, &inputPointers);
 
-        objectShader.set3f("camPos", camera.getPosition());
-        groundShader.set3f("camPos", camera.getPosition());
         setLights();
 
         //render objects
@@ -84,6 +82,9 @@ void Engine::setLights(){
         if(s.ID == lightShader.ID){
             continue;
         }
+        s.set3f("camPos", camera.getPosition());
+        s.set3f("cameraPointDirection", camera.getDir());
+
         s.set3f("dirLight.direction", light1.getDirection());
         s.set3f("dirLight.color", light1.getColor());
         s.setFloat("dirLight.ambient", light1.getIntensity().ambient);
@@ -98,10 +99,14 @@ void Engine::setLights(){
         s.setFloat("pointLights[0].ambient", light2.getIntensity().ambient);
         s.setFloat("pointLights[0].diffuse", light2.getIntensity().diffuse);
         s.setFloat("pointLights[0].specular", light2.getIntensity().specular);
+    
+        s.set3f("spotLight.color", light3.getColor());
+        s.setFloat("spotLight.cosInnerCutoff", light3.getInnerCosCutoff());
+        s.setFloat("spotLight.cosOuterCutoff", light3.getOuterCosCutoff());
+        s.setFloat("spotLight.ambient", light3.getIntensity().ambient);
+        s.setFloat("spotLight.diffuse", light3.getIntensity().diffuse);
+        s.setFloat("spotLight.specular", light3.getIntensity().specular);
     }
-    objectShader.set3f("spotLight.color", light3.getColor());
-    objectShader.setFloat("spotLight.cosCutOff", light3.getCosCutoff());
-    objectShader.set3f("spotLight.spotDir", camera.getDir());
 }
 
 void Engine::setSpaces(){

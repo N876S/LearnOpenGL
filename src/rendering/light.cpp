@@ -17,9 +17,11 @@ PointLight::PointLight(Shader* shader, Mesh mesh, glm::vec3 position, glm::vec3 
     this->shader.set3f("lightColor", color);
 }
 
-SpotLight::SpotLight(float cutOff, glm::vec3 color){
-    this->cutOff = cutOff;
+SpotLight::SpotLight(float innerCutoff, float outerCutoff, glm::vec3 color, Intensity intensity){
+    this->innerCutoff = innerCutoff;
+    this->outerCutoff = outerCutoff;
     this->color = color;
+    this->intensity = intensity;
 }
 
 void PointLight::render(float time){
@@ -66,6 +68,10 @@ void Light::setColor(glm::vec3 color){
     this->color.z = color.z;
 }
 
-float SpotLight::getCosCutoff(){
-    return cos(glm::radians(cutOff));
+float SpotLight::getInnerCosCutoff(){
+    return cos(glm::radians(innerCutoff));
+}
+
+float SpotLight::getOuterCosCutoff(){
+    return cos(glm::radians(outerCutoff));
 }

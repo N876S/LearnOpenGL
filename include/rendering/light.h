@@ -81,14 +81,16 @@ class SpotLight : public Light {
 
     //--------------------------------------FIELDS------------------------------------------
     
-    float cutOff;
+    float innerCutoff;
+    float outerCutoff;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
-    SpotLight(float cutOff, glm::vec3 color);
+    SpotLight(float innerCutoff, float outerCutoff, glm::vec3 color, Intensity intensity);
     SpotLight() = default;
 
     //--------------------------------------METHODS--------------------------------------------
 
-    float getCosCutoff();
+    float getInnerCosCutoff();
+    float getOuterCosCutoff();
 };
