@@ -7,17 +7,21 @@ class Light {
     public:
 
     //--------------------------------------FIELDS------------------------------------------
-    
-    glm::vec3 color;
+
     struct Intensity {
         float ambient;
         float diffuse;
         float specular;
     };
 
-    Intensity intensity;
+    protected:
 
-    //------------------------------------CONSTRUCTOR------------------------------------------
+    Intensity intensity;
+    glm::vec3 color;
+
+    //------------------------------------CONSTRUCTOR-----------------------------------------
+
+    public:
 
     virtual ~Light() = default;
 
@@ -30,13 +34,15 @@ class Light {
 };
 
 class DirectionalLight : public Light {
-    public:
+    private:
 
     //--------------------------------------FIELDS------------------------------------------
 
     glm::vec3 direction;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
+
+    public:
 
     DirectionalLight(glm::vec3 color, Intensity intensity, glm::vec3 direction);
     DirectionalLight() = default;
@@ -47,7 +53,7 @@ class DirectionalLight : public Light {
 };
 
 class PointLight : public Light {
-    public:
+    private:
 
     //--------------------------------------FIELDS------------------------------------------
 
@@ -66,6 +72,8 @@ class PointLight : public Light {
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
+    public:
+
     PointLight(Shader* shader, Mesh mesh, glm::vec3 position, glm::vec3 color, Intensity intensity, Attenuation att);
     PointLight() = default;
 
@@ -77,7 +85,7 @@ class PointLight : public Light {
 };
 
 class SpotLight : public Light {
-    public:
+    private:
 
     //--------------------------------------FIELDS------------------------------------------
     
@@ -85,6 +93,8 @@ class SpotLight : public Light {
     float outerCutoff;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
+
+    public:
 
     SpotLight(float innerCutoff, float outerCutoff, glm::vec3 color, Intensity intensity);
     SpotLight() = default;

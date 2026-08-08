@@ -6,7 +6,17 @@
 #include "systems/camera.h"
 
 class InputManager {
+  private:
+
+  inline static Camera* camera = nullptr;
+  inline static float deltaTime;
+
   public:
+
+  //---------------------------------CONSTRUCTOR-----------------------------------------
+
+  InputManager(Camera& camera);
+  InputManager() = default;
 
   //------------------------------------METHODS------------------------------------------
 
@@ -15,4 +25,6 @@ class InputManager {
   static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
   static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
   static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
+  void updateInputData(Camera& camera, float deltaTime);
 };

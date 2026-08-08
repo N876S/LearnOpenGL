@@ -27,7 +27,6 @@ SpotLight::SpotLight(float innerCutoff, float outerCutoff, glm::vec3 color, Inte
 void PointLight::render(float time){
     //draw triangles
     shader.use();
-    glBindVertexArray(mesh.getVAO());
 
     position.x = 5.0f*sin(time);
     //position.y = 10.0f*cos(time);

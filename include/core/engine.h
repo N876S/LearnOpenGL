@@ -23,13 +23,11 @@ class Engine {
     const int OPENGL_VERSION_MAJOR = 4;
     const int OPENGL_VERSION_MINOR = 6;
 
-    float fov = 45.0f;
     float time = glfwGetTime();
     float lastTime = time;
     float deltaTime = time-lastTime;
 
     Camera camera;
-    Shader objectShader;
 
     std::vector<Shader> shaders;
 
@@ -103,19 +101,16 @@ class Engine {
         -0.5f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f
     };
 
-    Mesh cube;
-    Model crate;
-    Mesh platform;
-    Model ground;
+    Model car1;
+    Model car2;
+    Model car3;
 
     DirectionalLight light1;
-    PointLight light2;
+    //PointLight light2;
     SpotLight light3;
     
+    Shader objectShader;
     Shader lightShader;
-    Shader groundShader;
-
-    void* inputPointers[3]= {&camera, &deltaTime, &fov};
 
     public:
 
@@ -135,10 +130,6 @@ class Engine {
     void createShaders();
     void createObjects();
 
-    static int getWindowWidth(){
-        return WINDOW_WIDTH;
-    }
-    static int getWindowHeight(){
-        return WINDOW_HEIGHT;
-    }
+    static int getWindowWidth();
+    static int getWindowHeight();
 };

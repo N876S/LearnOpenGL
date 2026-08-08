@@ -65,3 +65,35 @@ glm::vec3 Camera::getPosition(){
 glm::vec3 Camera::getDir(){
     return cameraDir;
 }
+
+float Camera::getFov(){
+    return fov;
+}
+
+float Camera::getNearPlane(){
+    return nearPlane;
+}
+
+float Camera::getFarPlane(){
+    return farPlane;
+}
+
+float Camera::getMovementSpeed(){
+    return movementSpeed;
+}
+
+glm::vec3 Camera::getRight(){
+    return cameraRight;
+}
+
+glm::vec3 Camera::getUp(){
+    return cameraUp;
+}
+
+void Camera::updateFov(float fovOffset){
+    fov += fovOffset;
+}
+
+void Camera::setFov(float fov){
+    this->fov = fov;
+}

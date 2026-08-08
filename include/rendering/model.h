@@ -9,37 +9,27 @@
 #include "stb_image/stb_image.h"
 #include "rendering/mesh.h"
 #include "rendering/material.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 class Model {
+    private:
+
+    std::vector<Mesh> meshes;
+    std::string directory;
+
+    void loadModel(std::string path);
+    void processNode(aiNode* node, const aiScene* scene);
+    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    std::vector<Mesh::Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+    unsigned int TextureFromFile(const char* path, const std::string& directory);
+    std::vector<Mesh::Texture> loadedTextures;
+
     public:
 
-    //--------------------------------------FIELDS------------------------------------------
-    
-    Mesh mesh;
-    GLuint texture;
-    GLuint specularMap;
-    Shader shader;
-    const char* textureSource;
-    const char* specularMapSource;
-    glm::vec3 color;
-    MaterialType materialType;
-    MaterialConfig materialConfig;
-
-    //------------------------------------CONSTRUCTOR------------------------------------------
-
-    Model(Shader* shader, Mesh mesh, const char* textureSource, const char* specularMapSource, MaterialType material);
-    Model(Shader* shader, Mesh mesh, glm::vec3 color, MaterialType material);
+    Model(const char* filePath);
     Model() = default;
 
-    //--------------------------------------METHODS--------------------------------------------
-
-    void render(const std::vector<glm::vec3> &positions, float time);
-    void render(glm::vec3 position, float time);
-
-    void setTextures();
-    void setMaterial();
-    
-    void createTexture();
-
-    MaterialType getMaterialType();
+    void draw(Shader& shader);
 };
