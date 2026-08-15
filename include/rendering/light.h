@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mesh.h"
-#include "shader.h"
+#include "rendering/shader.h"
+#include "rendering/model.h"
 
 class Light {
     public:
@@ -57,7 +57,7 @@ class PointLight : public Light {
 
     //--------------------------------------FIELDS------------------------------------------
 
-    Mesh mesh;
+    Model model;
     Shader shader;
 
     glm::vec3 position;
@@ -74,13 +74,14 @@ class PointLight : public Light {
 
     public:
 
-    PointLight(Shader* shader, Mesh mesh, glm::vec3 position, glm::vec3 color, Intensity intensity, Attenuation att);
+    PointLight(Shader* shader, const char* filePath, glm::vec3 position, glm::vec3 color, Intensity intensity, Attenuation att);
     PointLight() = default;
 
     //--------------------------------------METHODS--------------------------------------------
 
-    void render(float time);
+    void draw();
     glm::vec3 getPosition();
+    void setPosition(float x, float y, float z);
     Attenuation getAtt();
 };
 
@@ -103,4 +104,5 @@ class SpotLight : public Light {
 
     float getInnerCosCutoff();
     float getOuterCosCutoff();
+    void updateCutoff(float cutoff);
 };

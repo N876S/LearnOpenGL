@@ -106,7 +106,7 @@ class Engine {
     Model car3;
 
     DirectionalLight light1;
-    //PointLight light2;
+    PointLight light2;
     SpotLight light3;
     
     Shader objectShader;
@@ -122,7 +122,7 @@ class Engine {
 
     void render();
 
-    void setLights();
+    void setUniforms();
     void setSpaces();
 
     void setupGLFW();

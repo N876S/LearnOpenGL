@@ -7,9 +7,9 @@
 TO DO
 1. Update input method system - DONE
 1.5. Make most variables private and use getters setters - DONE
-1.75. Fix materials class and stuff
-2. Abstract camera uniforms
-3. Fix the light class to have a model for point lights
+1.75. Fix materials class and stuff - DONE
+2. Abstract camera uniforms - DONE
+3. Fix the light class to have a model for point lights - DONE
 4. Fix up shaders to have a single colour shader unaffected by light - just uniform the colour
 5. Add stencil testing for outlining objects
 6. Make an army of cars and optimize
@@ -21,7 +21,7 @@ Engine::Engine(){
     createWindow();
 
     //create camera
-    camera = Camera(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 5.0f, 0.1f);
+    camera = Camera(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 20.0f, 0.1f);
 
     //create input manager
     inputManager = InputManager(camera);
@@ -40,9 +40,9 @@ void Engine::createShaders(){
 
 void Engine::createObjects(){
     //create lights
-    light1 = DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f), {0.2f, 0.5f, 1.0f}, glm::vec3(0.0f, -1.0f, 0.0f));
-    //light2 = PointLight(&lightShader, cube, glm::vec3(-4.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), {0.2f, 1.0f, 1.0f}, {1.0f, 0.022f, 0.0019f});
-    light3 = SpotLight(5.0f, 15.0f, glm::vec3(1.0f, 1.0f, 1.0f), {0.2f, 1.0f, 1.0f});
+    light1 = DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f), {0.0f, 0.05f, 0.1f}, glm::vec3(0.0f, -1.0f, 0.0f));
+    light2 = PointLight(&lightShader, "../res/car1/Pony_cartoon.obj", glm::vec3(1.0f, 5.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), {0.0f, 0.5f, 1.0f}, {1.0f, 0.022f, 0.0019f});
+    light3 = SpotLight(0.0f, 0.0f, glm::vec3(1.0f, 1.0f, 1.0f), {0.0f, 1.0f, 1.0f});
 
     //create models
     car1 = Model("../res/car1/Pony_cartoon.obj");
@@ -61,7 +61,7 @@ void Engine::render(){
         inputManager.processInput(window);
 
         //clear buffers
-        glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
+        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //set view and proj matrices
@@ -69,27 +69,38 @@ void Engine::render(){
         projectionMatrix = glm::perspective(glm::radians(camera.getFov()), (float) WINDOW_WIDTH / (float) WINDOW_HEIGHT, camera.getNearPlane(), camera.getFarPlane());
         setSpaces();
 
-        //set model matrix
+        //set uniforms
+        setUniforms();
+
+        //render objects
+
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
         model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));	
         objectShader.setMatrix4f("model", model);
 
-        //other uniforms (TO MOVE)
-        objectShader.set3f("camPos", camera.getPosition());
-        objectShader.set3f("cameraPointDirection", camera.getDir());
-
-        setLights();
-
-        //render objects
         car1.draw(objectShader);
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(5.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f)); 
-        objectShader.setMatrix4f("model", model);
+        //car army
+        for(int i = 0; i < 20; i++){
+            for(int j = 0; j < 20; j++){
+                model = glm::mat4(1.0f);
+                model = glm::translate(model, glm::vec3(5.0f * i, 0.0f, 10.0f * j));
+                model = glm::rotate(model, glm::radians(time*100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f)); 
+                objectShader.setMatrix4f("model", model);
 
-        car2.draw(objectShader);
+                car2.draw(objectShader);
+            }
+        }
+
+        light2.setPosition(sin(glm::radians(time*100.0f)) * 40.0f + 40.0f, 5.0f, cos(glm::radians(time*100.0f)) * 100.0f + 100.0f);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, light2.getPosition());
+        model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f)); 
+        lightShader.setMatrix4f("model", model);
+
+        light2.draw();
 
         //callbacks & buffers
         glfwPollEvents();
@@ -98,20 +109,24 @@ void Engine::render(){
     glfwTerminate();
 }
 
-void Engine::setLights(){
+void Engine::setUniforms(){
     for(Shader s : shaders){
+        //skip shaders
         if(s.getID() == lightShader.getID()){
             continue;
         }
+
+        //camera
         s.set3f("camPos", camera.getPosition());
         s.set3f("cameraPointDirection", camera.getDir());
 
+        //lights
         s.set3f("dirLight.direction", light1.getDirection());
         s.set3f("dirLight.color", light1.getColor());
         s.setFloat("dirLight.ambient", light1.getIntensity().ambient);
         s.setFloat("dirLight.diffuse", light1.getIntensity().diffuse);
         s.setFloat("dirLight.specular", light1.getIntensity().specular);
-        /*
+        
         s.set3f("pointLights[0].position", light2.getPosition());
         s.set3f("pointLights[0].color", light2.getColor());
         s.setFloat("pointLights[0].constant", light2.getAtt().constant);
@@ -120,7 +135,7 @@ void Engine::setLights(){
         s.setFloat("pointLights[0].ambient", light2.getIntensity().ambient);
         s.setFloat("pointLights[0].diffuse", light2.getIntensity().diffuse);
         s.setFloat("pointLights[0].specular", light2.getIntensity().specular);
-        */
+        
         s.set3f("spotLight.color", light3.getColor());
         s.setFloat("spotLight.cosInnerCutoff", light3.getInnerCosCutoff());
         s.setFloat("spotLight.cosOuterCutoff", light3.getOuterCosCutoff());

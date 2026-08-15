@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "systems/camera.h"
+#include "rendering/light.h"
 
 class InputManager {
   private:

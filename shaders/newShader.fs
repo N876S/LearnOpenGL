@@ -64,10 +64,10 @@ void main(){
     vec3 outputLightColor = vec3(0.0f);
 
     outputLightColor += getDirLightFactor(dirLight, fixedNormals, fragToCamera);
-    /*
+    
     for(int i = 0; i < NR_POINT_LIGHTS; i++){
         outputLightColor += getPointLightFactor(pointLights[i], fixedNormals, fragToCamera);
-    }*/
+    }
     outputLightColor += getSpotLightFactor(spotLight, -fragToCamera, fixedNormals);
 
     fragColor = vec4(outputLightColor, 1.0f) * texture(material.diffuse_texture1, texCoord);

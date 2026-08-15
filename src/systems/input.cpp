@@ -1,4 +1,5 @@
 #include "systems/input.h"
+#include "rendering/light.h"
 
 void InputManager::processInput(GLFWwindow* window) {
   float o = camera->getMovementSpeed() * deltaTime;
