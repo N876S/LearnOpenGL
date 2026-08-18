@@ -32,4 +32,5 @@ class Model {
     Model() = default;
 
     void draw(Shader& shader);
+    void drawOutlined(Shader& objectShader, Shader& outlineShader, glm::vec3 color, float outlineSize, glm::vec3 position);
 };

@@ -2,20 +2,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
 
-/*
-
-TO DO
-1. Update input method system - DONE
-1.5. Make most variables private and use getters setters - DONE
-1.75. Fix materials class and stuff - DONE
-2. Abstract camera uniforms - DONE
-3. Fix the light class to have a model for point lights - DONE
-4. Fix up shaders to have a single colour shader unaffected by light - just uniform the colour
-5. Add stencil testing for outlining objects
-6. Make an army of cars and optimize
-
-*/
-
 Engine::Engine(){
     setupGLFW();
     createWindow();
@@ -24,25 +10,28 @@ Engine::Engine(){
     camera = Camera(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 20.0f, 0.1f);
 
     //create input manager
-    inputManager = InputManager(camera);
+    inputManager = InputManager();
 
     createShaders();
     createObjects();
 }
 
 void Engine::createShaders(){
-    objectShader = Shader("../shaders/newShader.vs", "../shaders/newShader.fs");
+    objectShader = Shader("../shaders/objectShader.vs", "../shaders/objectShader.fs");
     shaders.push_back(objectShader);
 
-    lightShader = Shader("../shaders/lightShader.vs", "../shaders/lightShader.fs");
+    lightShader = Shader("../shaders/simpleShader.vs", "../shaders/simpleShader.fs");
     shaders.push_back(lightShader);
 }
 
 void Engine::createObjects(){
     //create lights
     light1 = DirectionalLight(glm::vec3(1.0f, 1.0f, 1.0f), {0.0f, 0.05f, 0.1f}, glm::vec3(0.0f, -1.0f, 0.0f));
+    lights.push_back(light1);
     light2 = PointLight(&lightShader, "../res/car1/Pony_cartoon.obj", glm::vec3(1.0f, 5.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), {0.0f, 0.5f, 1.0f}, {1.0f, 0.022f, 0.0019f});
-    light3 = SpotLight(0.0f, 0.0f, glm::vec3(1.0f, 1.0f, 1.0f), {0.0f, 1.0f, 1.0f});
+    lights.push_back(light2);
+    light3 = SpotLight(5.0f, 10.0f, glm::vec3(1.0f, 1.0f, 1.0f), {0.0f, 1.0f, 1.0f});
+    lights.push_back(light3);
 
     //create models
     car1 = Model("../res/car1/Pony_cartoon.obj");
@@ -57,12 +46,11 @@ void Engine::render(){
         lastTime = time;
 
         //input
-        inputManager.updateInputData(camera, deltaTime);
         inputManager.processInput(window);
 
         //clear buffers
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         //set view and proj matrices
         viewMatrix = camera.getView();
@@ -75,7 +63,7 @@ void Engine::render(){
         //render objects
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); 
+        model = glm::translate(model, glm::vec3(-10.0f, 0.0f, -10.0f)); 
         model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));	
         objectShader.setMatrix4f("model", model);
 
@@ -86,15 +74,14 @@ void Engine::render(){
             for(int j = 0; j < 20; j++){
                 model = glm::mat4(1.0f);
                 model = glm::translate(model, glm::vec3(5.0f * i, 0.0f, 10.0f * j));
-                model = glm::rotate(model, glm::radians(time*100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
                 model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f)); 
                 objectShader.setMatrix4f("model", model);
 
-                car2.draw(objectShader);
+                car2.drawOutlined(objectShader, lightShader, glm::vec3(0.1f, 0.5f, 0.5f), 0.001f, glm::vec3(5.0f * i, 0.0f, 10.0f * j));
             }
         }
 
-        light2.setPosition(sin(glm::radians(time*100.0f)) * 40.0f + 40.0f, 5.0f, cos(glm::radians(time*100.0f)) * 100.0f + 100.0f);
+        light2.setPosition(sin(glm::radians(time*50.0f)) * 40.0f + 40.0f, 5.0f, cos(glm::radians(time*50.0f)) * 100.0f + 100.0f);
         model = glm::mat4(1.0f);
         model = glm::translate(model, light2.getPosition());
         model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f)); 
@@ -136,12 +123,21 @@ void Engine::setUniforms(){
         s.setFloat("pointLights[0].diffuse", light2.getIntensity().diffuse);
         s.setFloat("pointLights[0].specular", light2.getIntensity().specular);
         
-        s.set3f("spotLight.color", light3.getColor());
-        s.setFloat("spotLight.cosInnerCutoff", light3.getInnerCosCutoff());
-        s.setFloat("spotLight.cosOuterCutoff", light3.getOuterCosCutoff());
-        s.setFloat("spotLight.ambient", light3.getIntensity().ambient);
-        s.setFloat("spotLight.diffuse", light3.getIntensity().diffuse);
-        s.setFloat("spotLight.specular", light3.getIntensity().specular);
+        if(light3.isOn()){
+            s.set3f("spotLight.color", light3.getColor());
+            s.setFloat("spotLight.cosInnerCutoff", light3.getInnerCosCutoff());
+            s.setFloat("spotLight.cosOuterCutoff", light3.getOuterCosCutoff());
+            s.setFloat("spotLight.ambient", light3.getIntensity().ambient);
+            s.setFloat("spotLight.diffuse", light3.getIntensity().diffuse);
+            s.setFloat("spotLight.specular", light3.getIntensity().specular);
+        } else {
+            s.set3f("spotLight.color", light3.getColor());
+            s.setFloat("spotLight.cosInnerCutoff", light3.getInnerCosCutoff());
+            s.setFloat("spotLight.cosOuterCutoff", light3.getOuterCosCutoff());
+            s.setFloat("spotLight.ambient", 0.0f);
+            s.setFloat("spotLight.diffuse", 0.0f);
+            s.setFloat("spotLight.specular", 0.0f);
+        }
     }
 }
 
@@ -169,6 +165,7 @@ void Engine::createWindow(){
         glfwTerminate();
     }
     glfwMakeContextCurrent(window);
+    glfwSetWindowUserPointer(window, this);
 
     // initialize GLAD (after window)
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -183,9 +180,13 @@ void Engine::createWindow(){
     glfwSetFramebufferSizeCallback(window, inputManager.framebuffer_size_callback);
     glfwSetCursorPosCallback(window, inputManager.mouse_callback);
     glfwSetScrollCallback(window, inputManager.scroll_callback);
+    glfwSetKeyCallback(window, inputManager.key_callback);
     
     //enable buffers
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
 
     //enable vsync
     glfwSwapInterval(1);
@@ -200,4 +201,24 @@ int Engine::getWindowWidth(){
 
 int Engine::getWindowHeight(){
     return WINDOW_HEIGHT;
+}
+
+GLFWwindow* Engine::getWindow(){
+    return window;
+}
+
+Camera* Engine::getCamera(){
+    return &camera;
+}
+
+float Engine::getDeltaTime(){
+    return deltaTime;
+}
+
+std::vector<Light> Engine::getLights(){
+    return lights;
+}
+
+void Engine::spotLightSwitch(){
+    light3.flipLight();
 }

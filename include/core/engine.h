@@ -29,8 +29,6 @@ class Engine {
 
     Camera camera;
 
-    std::vector<Shader> shaders;
-
     glm::mat4 viewMatrix = glm::mat4(1.0f);
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
 
@@ -108,9 +106,13 @@ class Engine {
     DirectionalLight light1;
     PointLight light2;
     SpotLight light3;
+
+    std::vector<Light> lights;
     
     Shader objectShader;
     Shader lightShader;
+
+    std::vector<Shader> shaders;
 
     public:
 
@@ -122,6 +124,8 @@ class Engine {
 
     void render();
 
+    void spotLightSwitch();
+
     void setUniforms();
     void setSpaces();
 
@@ -132,4 +136,8 @@ class Engine {
 
     static int getWindowWidth();
     static int getWindowHeight();
+    GLFWwindow* getWindow();
+    Camera* getCamera();
+    float getDeltaTime();
+    std::vector<Light> getLights();
 };

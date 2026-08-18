@@ -27,6 +27,7 @@ SpotLight::SpotLight(float innerCutoff, float outerCutoff, glm::vec3 color, Inte
 }
 
 void PointLight::draw(){
+    this->shader.set3f("lightColor", color);
     model.draw(shader);
 }
 
@@ -70,7 +71,10 @@ void PointLight::setPosition(float x, float y, float z){
     this->position.z = z;
 }
 
-void SpotLight::updateCutoff(float cutoff){
-    this->innerCutoff += cutoff;
-    this->outerCutoff += cutoff*2.0f;
+void SpotLight::flipLight(){
+    on = !on;
+}
+
+float SpotLight::isOn(){
+    return on;
 }

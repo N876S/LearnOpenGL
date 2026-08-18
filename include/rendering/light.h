@@ -92,6 +92,7 @@ class SpotLight : public Light {
     
     float innerCutoff;
     float outerCutoff;
+    bool on = true;
 
     //------------------------------------CONSTRUCTOR------------------------------------------
 
@@ -104,5 +105,6 @@ class SpotLight : public Light {
 
     float getInnerCosCutoff();
     float getOuterCosCutoff();
-    void updateCutoff(float cutoff);
+    void flipLight();
+    float isOn();
 };
