@@ -8,6 +8,7 @@
 #include "systems/input.h"
 #include "rendering/model.h"
 #include "rendering/light.h"
+#include "rendering/simpleMesh.h"
 
 class Engine {
     private:
@@ -33,6 +34,7 @@ class Engine {
     glm::mat4 projectionMatrix = glm::mat4(1.0f);
 
     float data[288] = { 
+        //cube with normals and texcoords
         //POSITION           //NORMALS          TEXTURE COORDS
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
         0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
@@ -91,6 +93,7 @@ class Engine {
     };
 
     float data2[36] = {
+        //rectangle with normals
         -0.5f, 0.0f, -0.5f, 0.0f, 1.0f, 0.0f,
         0.5f, 0.0f, -0.5f, 0.0f, 1.0f, 0.0f,
         0.5f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f,
@@ -99,9 +102,21 @@ class Engine {
         -0.5f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f
     };
 
+    float data3[30] = {
+        //rectangle with texcoords
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f
+    };
+
     Model car1;
     Model car2;
     Model car3;
+
+    SimpleMesh grass;
 
     DirectionalLight light1;
     PointLight light2;
@@ -111,6 +126,7 @@ class Engine {
     
     Shader objectShader;
     Shader lightShader;
+    Shader transparentShader;
 
     std::vector<Shader> shaders;
 

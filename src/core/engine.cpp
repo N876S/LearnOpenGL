@@ -22,6 +22,9 @@ void Engine::createShaders(){
 
     lightShader = Shader("../shaders/simpleShader.vs", "../shaders/simpleShader.fs");
     shaders.push_back(lightShader);
+
+    transparentShader = Shader("../shaders/simpleTextureShader.vs", "../shaders/simpleTextureShader.fs");
+    shaders.push_back(transparentShader);
 }
 
 void Engine::createObjects(){
@@ -36,6 +39,9 @@ void Engine::createObjects(){
     //create models
     car1 = Model("../res/car1/Pony_cartoon.obj");
     car2 = Model("../res/car2/lambo.obj");
+
+    //create simplemeshes
+    grass = SimpleMesh(data3, 30, "../res/window.png");
 }
 
 void Engine::render(){
@@ -49,7 +55,7 @@ void Engine::render(){
         inputManager.processInput(window);
 
         //clear buffers
-        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+        glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         //set view and proj matrices
@@ -70,8 +76,8 @@ void Engine::render(){
         car1.draw(objectShader);
 
         //car army
-        for(int i = 0; i < 20; i++){
-            for(int j = 0; j < 20; j++){
+        for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 10; j++){
                 model = glm::mat4(1.0f);
                 model = glm::translate(model, glm::vec3(5.0f * i, 0.0f, 10.0f * j));
                 model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f)); 
@@ -88,6 +94,16 @@ void Engine::render(){
         lightShader.setMatrix4f("model", model);
 
         light2.draw();
+
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                model = glm::mat4(1.0f);
+                model = glm::translate(model, glm::vec3(-20.0f - 5*i, 0.0f, -20.0f - 5*j)); 
+                transparentShader.setMatrix4f("model", model);
+
+                grass.drawTransparent(transparentShader);
+            }
+        }
 
         //callbacks & buffers
         glfwPollEvents();
