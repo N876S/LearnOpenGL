@@ -13,6 +13,34 @@ void Model::draw(Shader& shader){
     }
 }
 
+void Model::drawOutlined(Shader& objectShader, Shader& outlineShader, glm::vec3 color, float outlineSize, glm::vec3 position){
+    //enable tests
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_STENCIL_BUFFER_BIT);
+
+    //pass all fragments, replace with ref, and enable writing
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilMask(0xFF);
+    draw(objectShader);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::scale(model, glm::vec3(0.02f + outlineSize, 0.02f + outlineSize, 0.02f + outlineSize)); 
+    outlineShader.setMatrix4f("model", model);
+    outlineShader.set3f("lightColor", color);
+
+    //disable writing (read only)
+    glStencilMask(0x00);
+    //write if it is outside the original
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    draw(outlineShader);
+
+    //reset stencil test
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+}
+
 void Model::loadModel(std::string path){
     //load scene object
     Assimp::Importer importer;

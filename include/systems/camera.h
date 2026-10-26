@@ -17,7 +17,7 @@ class Camera {
 
     float fov = 45.0f;
     float nearPlane = 0.1f;
-    float farPlane = 100.0f;
+    float farPlane = 400.0f;
 
     float movementSpeed;
     float sensitivity;
